@@ -5,6 +5,7 @@ import { ArrowRight, Shuffle, Globe2, Users, Building2, DollarSign, Languages } 
 import { CONTINENTS } from '../../data/continents';
 import { getRandomCountry } from '../../services/countriesApi';
 import { GlobalSearch } from '../../components/search/GlobalSearch';
+import { STATS } from '../../config/constants';
 
 function AnimatedCounter({ target, suffix = '' }: { target: number; suffix?: string }) {
   const [count, setCount] = useState(0);
@@ -27,13 +28,8 @@ function AnimatedCounter({ target, suffix = '' }: { target: number; suffix?: str
   return <span ref={ref}>{count}{suffix}</span>;
 }
 
-const STATS = [
-  { icon: Globe2, label: 'Davlatlar', value: 195, suffix: '+', color: 'text-primary-600' },
-  { icon: Building2, label: "Qit'alar", value: 7, suffix: '', color: 'text-emerald-600' },
-  { icon: Users, label: 'Jahon aholisi (mlrd)', value: 8, suffix: 'B+', color: 'text-violet-600' },
-  { icon: DollarSign, label: 'Valyutalar', value: 160, suffix: '+', color: 'text-amber-600' },
-  { icon: Languages, label: 'Tillar', value: 7000, suffix: '+', color: 'text-rose-600' },
-];
+// Use STATS from config; map icon name to actual component
+const ICONS = { Globe2, Building2, Users, DollarSign, Languages } as const;
 
 export function Home() {
   const navigate = useNavigate();
@@ -44,7 +40,10 @@ export function Home() {
     try {
       const country = await getRandomCountry();
       navigate(`/country/${country.alpha2Code.toLowerCase()}`);
-    } catch { /* ignore */ } finally { setRandomLoading(false); }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      alert('Xatolik: ' + msg);
+    } finally { setRandomLoading(false); }
   };
 
   return (
@@ -99,17 +98,20 @@ export function Home() {
       <section className="py-16 bg-white dark:bg-slate-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
-            {STATS.map(({ icon: Icon, label, value, suffix, color }, i) => (
-              <motion.div key={label} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="text-center">
-                <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center mx-auto mb-3">
-                  <Icon className={`w-6 h-6 ${color}`} />
-                </div>
-                <div className="text-3xl font-black text-slate-900 dark:text-white">
-                  <AnimatedCounter target={value} suffix={suffix} />
-                </div>
-                <div className="text-sm text-slate-500 dark:text-slate-400 mt-1">{label}</div>
-              </motion.div>
-            ))}
+            {STATS.map(({ icon: iconName, label, value, suffix, color }, i) => {
+              const Icon = (ICONS as any)[iconName] || Globe2;
+              return (
+                <motion.div key={label} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="text-center">
+                  <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center mx-auto mb-3">
+                    <Icon className={`w-6 h-6 ${color}`} />
+                  </div>
+                  <div className="text-3xl font-black text-slate-900 dark:text-white">
+                    <AnimatedCounter target={value} suffix={suffix} />
+                  </div>
+                  <div className="text-sm text-slate-500 dark:text-slate-400 mt-1">{label}</div>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
