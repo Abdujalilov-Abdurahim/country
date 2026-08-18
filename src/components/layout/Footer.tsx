@@ -48,15 +48,15 @@ export function Footer() {
           <div>
             <h3 className="font-semibold text-white text-sm uppercase tracking-wider mb-4">Ma'lumot</h3>
             <p className="text-sm text-slate-400 mb-2">
-              Barcha davlat ma'lumotlari <strong className="text-slate-300">REST Countries API</strong> orqali olinadi.
+              Barcha davlat ma'lumotlari <strong className="text-slate-300">countries.dev API</strong> orqali olinadi.
             </p>
-            <a href="https://restcountries.com" target="_blank" rel="noopener noreferrer" className="text-sm text-primary-400 hover:text-primary-300 transition-colors">
-              restcountries.com →
+            <a href="https://countries.dev" target="_blank" rel="noopener noreferrer" className="text-sm text-primary-400 hover:text-primary-300 transition-colors">
+              countries.dev
             </a>
           </div>
         </div>
         <div className="border-t border-slate-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-slate-500">© {new Date().getFullYear()} World Countries. Ma'lumotlar: REST Countries API</p>
+          <p className="text-xs text-slate-500">© {new Date().getFullYear()} World Countries. Ma'lumotlar: countries.dev API</p>
           <p className="text-xs text-slate-500 flex items-center gap-1">Sevgi bilan yaratilgan <Heart className="w-3 h-3 text-red-500 fill-current" /></p>
         </div>
       </div>
